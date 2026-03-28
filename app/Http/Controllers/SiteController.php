@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
+use App\Http\Requests\PostEditPatientRequest;
 use Illuminate\Http\Request;
 
 use App\Models\Patient;
@@ -37,11 +39,18 @@ class SiteController extends Controller {
 		return view('edit-patient', [ 'patient' => $patient ]);
 	}
 
-	public function postEditPatient($patient_id, Request $request) {
-		$patient = Patient::find($patient_id);
-		$data = array_merge($request->except('birthdate'), [ 'birthdate' => Carbon::createFromFormat('d/m/Y', $request->birthdate) ]);
+	public function postEditPatient($patient_id, PostEditPatientRequest $request) {
+        $patient = Patient::find($patient_id);
 
-		$patient->update( $data );
+        $data = array_merge(
+            $request->except(['birthdate', 'picture']),
+            [
+                'birthdate' => Carbon::createFromFormat('d/m/Y', $request->birthdate),
+                'picture'   => Helper::uploadFile($request->file('picture'), 'Patient'),
+            ]
+        );
+
+        $patient->update( $data );
 
 		return redirect()->route('client')->with('toast', 'Paciente salvo com sucesso.');
 	}

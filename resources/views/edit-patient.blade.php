@@ -7,7 +7,7 @@
 
 			<div class="row mt-6 justify-content-center">
 				<div class="col-md-5 text-left">
-					<form action="{{ route('client.edit-patient', $patient->id) }}" method="POST">
+					<form action="{{ route('client.edit-patient', $patient->id) }}" method="POST" enctype="multipart/form-data">
 						@csrf
 						<div class="form-group">
 							<label for="name">Nome</label>
@@ -63,7 +63,7 @@
 
 						<div class="form-group">
 							<label for="picture">Foto</label>
-							<input type="file" name="picture" class="form-control @error('picture') is-invalid @enderror" id="picture" value="{{ old('picture') }}">
+							<input type="file" name="picture" class="form-control @error('picture') is-invalid @enderror" id="picture" value="{{ old('picture', $patient->picture) }}">
 							@error('picture')
 								<span class="invalid-feedback" role="alert">
 									<strong>{{ $message }}</strong>

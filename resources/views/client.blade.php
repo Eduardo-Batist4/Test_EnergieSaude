@@ -66,7 +66,7 @@
 			<div class="row mt-5 justify-content-center">
 				<div class="col-12 col-lg-10">
 					@if(auth()->User()->Patient()->count() === 0)
-						Você não tem nenhum cachorr cadastrado.
+						Você não tem nenhum cachorro cadastrado.
 					@else
 						<table class="table" style="width: 100%">
 							<thead>
@@ -82,15 +82,21 @@
 							<tbody>
 								@foreach (auth()->User()->Patient()->where('name', '!=', null)->get() as $patient)
 									<tr>
-										<td><img src="" class="radius" width="40"></td>
-										<td>{{ $patient->name }}</td>
-										<td>{{ $patient->getAge() }}</td>
-										<td>{{ $patient->birthdate->format('d/m/Y') }}</td>
-										<td>{{ $patient->breed }}</td>
-										<td>
-											<a href="{{ route('client.edit-patient', $patient->id) }}" class="mx-2" title="Editar">✏️</a>
-											<a href="javascript:if (confirm('Você tem certeza que deseja remover este cachorro?')) location.href='{{ route('client.remove-patient', $patient->id) }}'" class="mx-2" title="Remover">❌</a>
-										</td>
+                                        <td>
+                                            @if(!$patient->picture)
+                                                <img src="{{ asset('storage/default_dog.jpg')  }}" class="radius" width="40" height="40">
+                                            @else
+                                                <img src="{{ asset('storage/' . $patient->picture)  }}" class="radius" width="40">
+                                            @endif
+                                        </td>
+                                        <td>{{ $patient->name }}</td>
+                                        <td>{{ $patient->getAge() }}</td>
+                                        <td>{{ $patient->birthdate->format('d/m/Y') }}</td>
+                                        <td>{{ $patient->breed }}</td>
+                                        <td>
+                                            <a href="{{ route('client.edit-patient', $patient->id) }}" class="mx-2" title="Editar">✏️</a>
+                                            <a href="javascript:if (confirm('Você tem certeza que deseja remover este cachorro?')) location.href='{{ route('client.remove-patient', $patient->id) }}'" class="mx-2" title="Remover">❌</a>
+                                        </td>
 									</tr>
 								@endforeach
 							</tbody>

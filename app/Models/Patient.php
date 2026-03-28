@@ -18,8 +18,10 @@ class Patient extends Model {
     protected $fillable = [
         'user_id',
         'name',
+        'breed',
 		'gender',
-		'birthdate'
+		'birthdate',
+        'picture'
 	];
 
 	protected $dates = [
