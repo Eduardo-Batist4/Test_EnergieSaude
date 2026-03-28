@@ -39,7 +39,13 @@ class User extends Authenticatable {
         'birthdate',
 	];
 
-	public function Patient() {
-		return $this->hasMany('App\Models\Patient');
+	public function patients()
+    {
+		return $this->hasMany(Patient::class);
 	}
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, 'owner_id');
+    }
 }
