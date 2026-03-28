@@ -24,16 +24,17 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>AGENDADA</td>
-							<td>Salsicha</td>
-							<td>Scooby-Doo</td>
-							<td>10/10/2020</td>
-							<td>10:00</td>
-							<td>
-								<a href="{{ route('vet.edit-appointment', 1) }}">Abrir</a>
-							</td>
-						</tr>
+                        @foreach ($appointments as $appointment)
+                            <tr>
+                                <td class="text-capitalize">{{ $appointment->status }}</td>
+                                <td>{{ $appointment->patient->name }}</td>
+                                <td>{{ \Carbon\Carbon::parse($appointment->date)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($appointment->start_time)->format('H:i') }}</td>
+                                <td>
+                                    <a href="{{ route('vet.edit-appointment', $appointment->id) }}">Abrir</a>
+                                </td>
+                            </tr>
+                        @endforeach
 					</tbody>
 				</table>
 

@@ -44,7 +44,6 @@ class SiteController extends Controller {
 		return view('edit-patient', [ 'patient' => $patient ]);
 	}
 
-    // ------------ EDUARDO ----------- //
 	public function postEditPatient($patient_id, PostEditPatientRequest $request): RedirectResponse
     {
         $patient = Patient::find($patient_id);
@@ -61,7 +60,6 @@ class SiteController extends Controller {
 
 		return redirect()->route('client')->with('toast', 'Paciente salvo com sucesso.');
 	}
-    // -------------------------------- //
 
 	public function getRemovePatient($patient_id) {
 		$patient = Patient::find($patient_id);
@@ -70,20 +68,17 @@ class SiteController extends Controller {
 		return redirect()->route('client')->with('toast', 'Paciente removido com sucesso.');
 	}
 
-    // ------------ EDUARDO ----------- //
 	public function getAppointment(int $appointment_id): View
     {
 		$appointment = Appointment::findOrFail($appointment_id);
 
 		return view('appointment', [ 'appointment' => $appointment ]);
 	}
-    // -------------------------------- //
 
 	public function getCreateAppointment() {
 		return view('create-appointment');
 	}
 
-    // ------------ EDUARDO ----------- //
     public function postCreateAppointment(CreateAppointmentRequest $request): RedirectResponse
     {
         $user = auth()->user();
@@ -115,13 +110,12 @@ class SiteController extends Controller {
 
         return redirect()->route('client')->with('toast', 'Consulta marcada com sucesso.');
 	}
-    // -------------------------------- //
 
 	// ------------------ Veterinário ------------------
 	public function getVet(Request $request) {
-		// - TODO: Retornar todos os agendamentos
-		$appointments = [];
-		return view('vet', [ 'appointments' => $appointments ]);
+        $appointments = Appointment::all();
+
+        return view('vet', [ 'appointments' => $appointments ]);
 	}
 
 	public function getEditAppointment($appointment_id) {
@@ -130,7 +124,6 @@ class SiteController extends Controller {
 		return view('edit-appointment', [ 'appointment' => $appointment ]);
 	}
 
-    // ------------ EDUARDO ----------- //
     public function checkAvailability(Request $request): JsonResponse
     {
         $date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
@@ -142,5 +135,4 @@ class SiteController extends Controller {
 
         return response()->json($occupied);
     }
-    // -------------------------------- //
 }
