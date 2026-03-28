@@ -14,42 +14,42 @@
 
 					<table class="table">
 						<tbody>
-							<tr>
-								<th>Consulta</th>
-								<td>1</td>
-							</tr>
-							<tr>
-								<th>Status</th>
-								<td>FINALIZADA</td>
-							</tr>
-							<tr>
-								<th>Data e hora</th>
-								<td>10/10/2020 10:10</td>
-							</tr>
-							<tr>
-								<th>Nome do paciente</th>
-								<td>Scooby-Doo</td>
-							</tr>
-							<tr>
-								<th>Raça</th>
-								<td>Dogue Alemão</td>
-							</tr>
-							<tr>
-								<th>Idade</th>
-								<td>7 dias</td>
-							</tr>
-							<tr>
-								<th>Dono</th>
-								<td>Salsicha Billy Rogers</td>
-							</tr>
-							<tr>
-								<th>Observações</th>
-								<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil amet officia nisi. Amet dolore impedit repellendus dolor eius perspiciatis laboriosam nobis, atque aspernatur numquam adipisci. Earum ipsum reiciendis, maxime numquam libero debitis dolor quasi enim repellendus at, accusantium maiores vero totam voluptate laborum eligendi sint aspernatur sapiente labore iure sit.</td>
-							</tr>
-							<tr>
-								<th>Veterinário responsável</th>
-								<td>Mário Veterinário (CRMV PR-123456)</td>
-							</tr>
+                            <tr>
+                                <th>Consulta</th>
+                                <td>{{ $appointment->id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>{{ $appointment->status }}</td>
+                            </tr>
+                            <tr>
+                                <th>Data e hora</th>
+                                <td>{{ $appointment->date }} {{ $appointment->start_time }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nome do paciente</th>
+                                <td>{{ $appointment->patient->name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Raça</th>
+                                <td>{{ $appointment->patient->breed }}</td>
+                            </tr>
+                            <tr>
+                                <th>Idade</th>
+                                <td>7 dias</td>
+                            </tr>
+                            <tr>
+                                <th>Dono</th>
+                                {{-- <td>{{ $appointment->patient->user }}</td> --}}
+                            </tr>
+                            <tr>
+                                <th>Observações</th>
+                                <td>{{ $appointment->notes ?? 'Nenhuma observação.' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Veterinário responsável</th>
+                                <td>{{ $appointment->user->name }} (CRMV PR-123456)</td>
+                            </tr>
 						</tbody>
 					</table>
 				</div>
@@ -57,3 +57,6 @@
 		</div>
 	</section>
 @endsection
+<script>
+    console.log($appointment);
+</script>

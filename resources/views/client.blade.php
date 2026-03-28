@@ -3,7 +3,7 @@
 @section('content')
 	<section class="py-6 border-bottom">
 		<div class="container text-center">
-			<h1>Olá {{ explode(' ', trim(auth()->User()->name))[0] }}!</h1>
+			<h1>Olá {{ explode(' ', trim(auth()->user()->name))[0] }}!</h1>
 
 			<div class="row mt-6 justify-content-center">
 				<div class="col-md-3">
@@ -34,25 +34,31 @@
 			<div class="row mt-5 justify-content-center">
 				<div class="col-12 col-lg-10">
 				<table class="table" style="width: 100%">
-					<thead>
-						<tr>
-							<th>Status</th>
-							<th>Nome do cachorro</th>
-							<th>Data da consulta</th>
-							<th>Horário</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>FINALIZADA</td>
-							<td>Scooby-Doo</td>
-							<td>10/10/2020</td>
-							<td>10:10</td>
-							<td>
-								<a href="{{ route('client.view-appointment', 1) }}">Abrir</a>
-							</td>
-						</tr>
+                    <tbody>
+                        @if (auth()->user()->appointments()->count() === 0)
+                        Você não tem nenhuma consulta.
+                        @else
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Nome do cachorro</th>
+                                    <th>Data da consulta</th>
+                                    <th>Horário</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            @foreach (auth()->user()->appointments()->get() as $appointment)
+                                <tr>
+                                    <td class="text-capitalize">{{ $appointment->status }}</td>
+                                    <td>{{ $appointment->patient->name }}</td>
+                                    <td>{{ $appointment->date }}</td>
+                                    <td>{{ $appointment->start_time }}</td>
+                                    <td>
+                                        <a href="{{ route('client.view-appointment', $appointment->id) }}">Abrir</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
 					</tbody>
 				</table>
 				</div>
@@ -65,7 +71,7 @@
 			<h3>Meus cachorros</h3>
 			<div class="row mt-5 justify-content-center">
 				<div class="col-12 col-lg-10">
-					@if(auth()->User()->Patient()->count() === 0)
+					@if(auth()->user()->patients()->count() === 0)
 						Você não tem nenhum cachorro cadastrado.
 					@else
 						<table class="table" style="width: 100%">
@@ -80,7 +86,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach (auth()->User()->Patient()->where('name', '!=', null)->get() as $patient)
+								@foreach (auth()->user()->patients()->where('name', '!=', null)->get() as $patient)
 									<tr>
                                         <td>
                                             @if(!$patient->picture)

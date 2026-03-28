@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Helper\Helper;
+use App\Http\Requests\CreateAppointmentRequest;
 use App\Http\Requests\PostEditPatientRequest;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 
 use App\Models\Patient;
@@ -72,9 +74,36 @@ class SiteController extends Controller {
 		return view('create-appointment');
 	}
 
-	public function postCreateAppointment(Request $request) {
-		// - TODO: Agendar a consulta
-		return redirect()->route('client')->with('toast', 'Consulta marcada com sucesso.');
+    public function postCreateAppointment(CreateAppointmentRequest $request)
+    {
+        $user = auth()->user();
+        $patientId = (int) $request['patient'];
+
+        $patient = $user->patients()->where('id', $patientId)->first();
+        if(!$patient) {
+            abort(403, 'Você não é o dono desse paciente.');
+        }
+
+        $date = Carbon::createFromFormat('d/m/Y', $request->date)->toDateString();
+        $appointmentExists = Appointment::where('owner_id', $user->id)
+            ->where('date', $date)
+            ->whereTime('start_time', $request->time)
+            ->exists();
+
+        if($appointmentExists) {
+            return redirect()->back()->with('error', 'Este horário já está ocupado.');
+        }
+
+        Appointment::create([
+            'patient_id' => $patientId,
+            'owner_id' => $user->id,
+            'doctor_id' => 2,
+            'date' => $date,
+            'start_time' => $request->time,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('client')->with('toast', 'Consulta marcada com sucesso.');
 	}
 
 	// ------------------ Veterinário ------------------
@@ -90,4 +119,15 @@ class SiteController extends Controller {
 		return view('edit-appointment', [ 'appointment' => $appointment ]);
 	}
 
+    public function checkAvailability(Request $request)
+    {
+        $date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
+
+        $occupied = Appointment::where('date', $date)
+                            ->pluck('start_time')
+                            ->map(fn($time) => substr($time, 0, 5))
+                            ->toArray();
+
+        return response()->json($occupied);
+    }
 }

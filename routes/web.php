@@ -35,5 +35,7 @@ Route::get('agendar-consulta', [ SiteController::class, 'getCreateAppointment' ]
 Route::post('agendar-consulta', [ SiteController::class, 'postCreateAppointment' ])->name('client.create-appointment');
 Route::get('consulta/{appointment_id}', [ SiteController::class, 'getAppointment' ])->name('client.view-appointment');
 
+Route::get('consultas/horarios-ocupados', [ SiteController::class, 'checkAvailability' ])->name('client.view-available-time-appointment');
+
 // Website
 Route::get('', [ SiteController::class, 'getIndex' ])->name('index');

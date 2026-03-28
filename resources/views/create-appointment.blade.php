@@ -13,7 +13,7 @@
 							<label for="patient">Paciente</label>
 							<select name="patient" class="form-control @error('patient') is-invalid @enderror" id="patient">
 								<option value="">Selecione</option>
-								@foreach(auth()->User()->Patient()->where('name', '!=', null)->get() as $patient)
+								@foreach(auth()->user()->patients()->where('name', '!=', null)->get() as $patient)
 									<option value="{{ $patient->id }}">{{ $patient->name }}</option>
 								@endforeach
 							</select>
@@ -85,14 +85,39 @@
 				loadAppointmentTimes();
 			});
 
+            loadAppointmentTimes();
+
 			function loadAppointmentTimes() {
 				const date = $('#date').val();
-				// - TODO: Carregar os horários disponíveis via ajax de acordo com a data.
-				console.log(date);
+                const timeSelect = $('#time');
+
+                    if (!date) return;
+
+                    timeSelect.prop('disabled', true);
+
+                    $.ajax({
+                        url: '{{ route("client.view-available-time-appointment") }}',
+                        type: 'GET',
+                        data: { date: date },
+                        success: function(occupiedTimes) {
+                            console.log('occupied:', occupiedTimes);
+                            timeSelect.prop('disabled', false);
+                            timeSelect.find('option').prop('disabled', false).css('color', '');
+
+                            occupiedTimes.forEach(time => {
+                                const shortTime = time.substring(0, 5);
+                                timeSelect.find(`option[value="${shortTime}"]`)
+                                        .prop('disabled', true)
+                                        .css('color', '#ccc');
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Status:", xhr.status);
+                            console.error("Response:", xhr.responseText);
+                            timeSelect.prop('disabled', false);
+                        }
+                    });
 			}
-
-			loadAppointmentTimes();
 		});
-
 	</script>
 @endpush
