@@ -11,6 +11,9 @@ use Illuminate\Http\Request;
 use App\Models\Patient;
 
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class SiteController extends Controller {
 
@@ -41,7 +44,9 @@ class SiteController extends Controller {
 		return view('edit-patient', [ 'patient' => $patient ]);
 	}
 
-	public function postEditPatient($patient_id, PostEditPatientRequest $request) {
+    // ------------ EDUARDO ----------- //
+	public function postEditPatient($patient_id, PostEditPatientRequest $request): RedirectResponse
+    {
         $patient = Patient::find($patient_id);
 
         $data = array_merge(
@@ -56,6 +61,7 @@ class SiteController extends Controller {
 
 		return redirect()->route('client')->with('toast', 'Paciente salvo com sucesso.');
 	}
+    // -------------------------------- //
 
 	public function getRemovePatient($patient_id) {
 		$patient = Patient::find($patient_id);
@@ -64,17 +70,21 @@ class SiteController extends Controller {
 		return redirect()->route('client')->with('toast', 'Paciente removido com sucesso.');
 	}
 
-	public function getAppointment($appointment_id) {
-		// - TODO: Retornar consulta
-		$appointment = null;
+    // ------------ EDUARDO ----------- //
+	public function getAppointment(int $appointment_id): View
+    {
+		$appointment = Appointment::findOrFail($appointment_id);
+
 		return view('appointment', [ 'appointment' => $appointment ]);
 	}
+    // -------------------------------- //
 
 	public function getCreateAppointment() {
 		return view('create-appointment');
 	}
 
-    public function postCreateAppointment(CreateAppointmentRequest $request)
+    // ------------ EDUARDO ----------- //
+    public function postCreateAppointment(CreateAppointmentRequest $request): RedirectResponse
     {
         $user = auth()->user();
         $patientId = (int) $request['patient'];
@@ -105,6 +115,7 @@ class SiteController extends Controller {
 
         return redirect()->route('client')->with('toast', 'Consulta marcada com sucesso.');
 	}
+    // -------------------------------- //
 
 	// ------------------ Veterinário ------------------
 	public function getVet(Request $request) {
@@ -119,7 +130,8 @@ class SiteController extends Controller {
 		return view('edit-appointment', [ 'appointment' => $appointment ]);
 	}
 
-    public function checkAvailability(Request $request)
+    // ------------ EDUARDO ----------- //
+    public function checkAvailability(Request $request): JsonResponse
     {
         $date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
 
@@ -130,4 +142,5 @@ class SiteController extends Controller {
 
         return response()->json($occupied);
     }
+    // -------------------------------- //
 }

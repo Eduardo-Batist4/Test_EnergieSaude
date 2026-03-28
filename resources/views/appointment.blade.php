@@ -9,7 +9,11 @@
 				<div class="col-md-10 text-left">
 
 					<div class="text-center mb-4">
-						<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSDJVdoqib2dry6LTBDWU_0WWvWON_zdAMn_w&usqp=CAU" class="radius" height="140">
+                        @if(!$appointment->patient->picture)
+                            <img src="{{ asset('storage/default_dog.jpg')  }}" class="radius" width="140" height="140">
+                        @else
+                            <img src="{{ asset('storage/' . $appointment->patient->picture)  }}" class="radius" width="140" height="140">
+                        @endif
 					</div>
 
 					<table class="table">
@@ -40,7 +44,7 @@
                             </tr>
                             <tr>
                                 <th>Dono</th>
-                                {{-- <td>{{ $appointment->patient->user }}</td> --}}
+                                <td>{{ $appointment->owner->name }}</td>
                             </tr>
                             <tr>
                                 <th>Observações</th>
@@ -48,7 +52,7 @@
                             </tr>
                             <tr>
                                 <th>Veterinário responsável</th>
-                                <td>{{ $appointment->user->name }} (CRMV PR-123456)</td>
+                                <td>{{ $appointment->doctor->name }} (CRMV {{ $appointment->doctor->crmv }})</td>
                             </tr>
 						</tbody>
 					</table>
