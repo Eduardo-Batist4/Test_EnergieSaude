@@ -24,11 +24,10 @@ class PostEditPatientRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'sometimes|exists:users,id',
-            'name' => 'sometimes|min:4|max:200',
-            'breed' => 'sometimes',
-            'gender' => 'sometimes|in:M,F',
-            'birth' => 'sometimes|date',
+            'name' => 'required|min:4|max:200',
+            'breed' => 'required',
+            'gender' => 'required|in:M,F',
+            'birthdate' => 'required',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,|max:2048'
         ];
     }
