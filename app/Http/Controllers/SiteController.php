@@ -47,7 +47,7 @@ class SiteController extends Controller {
 		return view('edit-patient', [ 'patient' => $patient ]);
 	}
 
-	public function postEditPatient(int $patient_id, PostEditPatientRequest $request): RedirectResponse
+	public function postEditPatient(PostEditPatientRequest $request, int $patient_id): RedirectResponse
     {
         $patient = Patient::find($patient_id);
 
