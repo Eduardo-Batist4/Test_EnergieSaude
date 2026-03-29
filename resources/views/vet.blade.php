@@ -31,7 +31,7 @@
                                 <td>{{ \Carbon\Carbon::parse($appointment->date)->format('d/m/Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($appointment->start_time)->format('H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('vet.edit-appointment', $appointment->id) }}">Abrir</a>
+                                    <a href="{{ route('vet.view-edit-appointment', $appointment->id) }}">Abrir</a>
                                 </td>
                             </tr>
                         @endforeach

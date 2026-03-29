@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helper\Helper;
 use App\Http\Requests\CreateAppointmentRequest;
+use App\Http\Requests\EditAppointmentRequest;
+use App\Http\Requests\EditStatusAppointmentRequest;
 use App\Http\Requests\PostEditPatientRequest;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
@@ -26,7 +28,8 @@ class SiteController extends Controller {
 		return view('client');
 	}
 
-	public function getEditPatient($patient_id = null) {
+	public function getEditPatient(int|null $patient_id = null): View|RedirectResponse
+    {
 		$user = auth()->User();
 		if (!$patient_id) {
 			$patient = Patient::where([ 'user_id' => $user->id, 'name' => null ])->first();
@@ -44,7 +47,7 @@ class SiteController extends Controller {
 		return view('edit-patient', [ 'patient' => $patient ]);
 	}
 
-	public function postEditPatient($patient_id, PostEditPatientRequest $request): RedirectResponse
+	public function postEditPatient(int $patient_id, PostEditPatientRequest $request): RedirectResponse
     {
         $patient = Patient::find($patient_id);
 
@@ -61,7 +64,8 @@ class SiteController extends Controller {
 		return redirect()->route('client')->with('toast', 'Paciente salvo com sucesso.');
 	}
 
-	public function getRemovePatient($patient_id) {
+	public function getRemovePatient(int $patient_id): RedirectResponse
+    {
 		$patient = Patient::find($patient_id);
 		$patient->delete();
 
@@ -75,7 +79,8 @@ class SiteController extends Controller {
 		return view('appointment', [ 'appointment' => $appointment ]);
 	}
 
-	public function getCreateAppointment() {
+	public function getCreateAppointment(): View
+    {
 		return view('create-appointment');
 	}
 
@@ -112,17 +117,44 @@ class SiteController extends Controller {
 	}
 
 	// ------------------ Veterinário ------------------
-	public function getVet(Request $request) {
+	public function getVet(Request $request): View
+    {
         $appointments = Appointment::all();
 
         return view('vet', [ 'appointments' => $appointments ]);
 	}
 
-	public function getEditAppointment($appointment_id) {
-		// - TODO: Retornar consulta
-		$appointment = null;
+	public function getEditAppointment(int $appointment_id): View
+    {
+		$appointment = Appointment::findOrFail($appointment_id);
+
 		return view('edit-appointment', [ 'appointment' => $appointment ]);
 	}
+
+    public function editAppointment(EditAppointmentRequest $request, int $appointment_id): RedirectResponse
+    {
+        $appointment = Appointment::findOrFail($appointment_id);
+
+        $appointment->update([
+            'notes'  => $request->notes,
+            'status' => 'completed',
+        ]);
+
+        return redirect()->route('vet.view-edit-appointment', $appointment_id)
+            ->with('success', 'Consulta atualizada com sucesso.');
+    }
+
+    public function editStatusAppointment(EditStatusAppointmentRequest $request, int $appointment_id): RedirectResponse
+    {
+        $appointment = Appointment::findOrFail($appointment_id);
+
+        $appointment->update([
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('vet.view-edit-appointment', $appointment_id)
+            ->with('success', 'Consulta atualizada com sucesso.');
+    }
 
     public function checkAvailability(Request $request): JsonResponse
     {
