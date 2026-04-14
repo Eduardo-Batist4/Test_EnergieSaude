@@ -55,9 +55,13 @@ class SiteController extends Controller {
             $request->except(['birthdate', 'picture']),
             [
                 'birthdate' => Carbon::createFromFormat('d/m/Y', $request->birthdate),
-                'picture'   => Helper::uploadFile($request->file('picture'), 'Patient'),
+                'picture'   => $request->hasFile('picture') ? Helper::uploadFile($request->file('picture'), 'Patient') : $patient->picture,
             ]
         );
+
+        if ($request->hasFile('picture')) {
+            Helper::deleteFile($patient->picture);
+        }
 
         $patient->update( $data );
 
@@ -138,6 +142,7 @@ class SiteController extends Controller {
         $appointment->update([
             'notes'  => $request->notes,
             'status' => 'completed',
+            'doctor_id' => auth()->id(),
         ]);
 
         return redirect()->route('vet.view-edit-appointment', $appointment_id)

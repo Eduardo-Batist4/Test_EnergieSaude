@@ -49,7 +49,7 @@
                             </thead>
                             @foreach (auth()->user()->appointments()->get() as $appointment)
                                 <tr>
-                                    <td class="text-capitalize">{{ $appointment->status }}</td>
+                                    <td class="text-capitalize">{{ $appointment->status_pt }}</td>
                                     <td>{{ $appointment->patient->name }}</td>
                                     <td>{{ $appointment->date }}</td>
                                     <td>{{ $appointment->start_time }}</td>
@@ -90,7 +90,7 @@
 									<tr>
                                         <td>
                                             @if(!$patient->picture)
-                                                <img src="{{ asset('storage/default_dog.jpg')  }}" class="radius" width="40" height="40">
+                                                <img src="{{ asset('images/default_dog.jpg')  }}" class="radius" width="40" height="40">
                                             @else
                                                 <img src="{{ asset('storage/' . $patient->picture)  }}" class="radius" width="40">
                                             @endif

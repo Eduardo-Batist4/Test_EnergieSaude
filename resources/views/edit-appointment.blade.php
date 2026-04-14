@@ -10,7 +10,7 @@
 
 					<div class="text-center mb-4">
                         @if(!$appointment->patient->picture)
-                            <img src="{{ asset('storage/default_dog.jpg')  }}" class="radius" width="140" height="140">
+                            <img src="{{ asset('images/default_dog.jpg')  }}" class="radius" width="140" height="140">
                         @else
                             <img src="{{ asset('storage/' . $appointment->patient->picture)  }}" class="radius" width="140" height="140">
                         @endif

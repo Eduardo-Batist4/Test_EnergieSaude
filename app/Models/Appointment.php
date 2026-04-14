@@ -33,4 +33,14 @@ class Appointment extends Model
     {
         return $this->belongsTo(Patient::class);
     }
+
+    public function getStatusPtAttribute()
+    {
+        return match($this->status) {
+            'pending'   => 'Pendente',
+            'confirmed' => 'Confirmado',
+            'completed' => 'Concluído',
+            default     => $this->status,
+        };
+    }
 }
